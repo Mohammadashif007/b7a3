@@ -10,30 +10,37 @@ CREATE TABLE
         updated_at TIMESTAMP DEFAULT NOW ()
     );
 
+CREATE TABLE
+    IF NOT EXISTS matches (
+        match_id SERIAL PRIMARY KEY,
+        fixture VARCHAR(100) NOT NULL,
+        tournament_category VARCHAR(100) NOT NULL,
+        base_ticket_price NUMERIC(10, 2) NOT NULL,
+        match_status VARCHAR(20) NOT NULL DEFAULT 'Available' CHECK (
+            match_status IN (
+                'Available',
+                'Selling Fast',
+                'Sold Out',
+                'Postponed'
+            )
+        ),
+        created_at TIMESTAMP DEFAULT NOW (),
+        updated_at TIMESTAMP DEFAULT NOW ()
+    );
 
-CREATE TABLE IF NOT EXISTS matches (
-    match_id            SERIAL PRIMARY KEY,
-    fixture             VARCHAR(100)    NOT NULL,
-    tournament_category VARCHAR(100)    NOT NULL,
-    base_ticket_price   NUMERIC(10,2)   NOT NULL,
-    match_status        VARCHAR(20)     NOT NULL DEFAULT 'Available' CHECK (match_status IN ('Available', 'Selling Fast', 'Sold Out', 'Postponed')),
-    created_at          TIMESTAMP       DEFAULT NOW(),
-    updated_at          TIMESTAMP       DEFAULT NOW()
-);
-
-
-CREATE TABLE IF NOT EXISTS bookings (
-    booking_id      SERIAL PRIMARY KEY,
-    user_id         INT             REFERENCES users(user_id) ON DELETE SET NULL,
-    match_id        INT             REFERENCES matches(match_id) ON DELETE SET NULL,
-    seat_number     VARCHAR(10),
-    payment_status  VARCHAR(20)     CHECK (payment_status IN ('Pending', 'Confirmed', 'Cancelled', 'Refunded')),
-    total_cost      NUMERIC(10,2)   NOT NULL,
-    created_at      TIMESTAMP       DEFAULT NOW(),
-    updated_at      TIMESTAMP       DEFAULT NOW()
-);
-
-
+CREATE TABLE
+    IF NOT EXISTS bookings (
+        booking_id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users (user_id) ON DELETE SET NULL,
+        match_id INT REFERENCES matches (match_id) ON DELETE SET NULL,
+        seat_number VARCHAR(10),
+        payment_status VARCHAR(20) CHECK (
+            payment_status IN ('Pending', 'Confirmed', 'Cancelled', 'Refunded')
+        ),
+        total_cost NUMERIC(10, 2) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW (),
+        updated_at TIMESTAMP DEFAULT NOW ()
+    );
 
 -- ! retrieve matches which status available
 SELECT
@@ -45,3 +52,14 @@ FROM
 WHERE
     match_status = 'Available'
     AND tournament_category = 'Champions League';
+
+-- ! retrieve user
+SELECT
+    user_id,
+    full_name,
+    email
+FROM
+    users
+WHERE
+    full_name ILIKE 'tanvir%'
+    OR full_name ILIKE '%Haque';
