@@ -9,3 +9,14 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT NOW (),
         updated_at TIMESTAMP DEFAULT NOW ()
     );
+
+
+CREATE TABLE IF NOT EXISTS matches (
+    match_id            SERIAL PRIMARY KEY,
+    fixture             VARCHAR(100)    NOT NULL,
+    tournament_category VARCHAR(100)    NOT NULL,
+    base_ticket_price   NUMERIC(10,2)   NOT NULL,
+    match_status        VARCHAR(20)     NOT NULL DEFAULT 'Available' CHECK (match_status IN ('Available', 'Selling Fast', 'Sold Out', 'Postponed')),
+    created_at          TIMESTAMP       DEFAULT NOW(),
+    updated_at          TIMESTAMP       DEFAULT NOW()
+);
