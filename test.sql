@@ -20,3 +20,15 @@ CREATE TABLE IF NOT EXISTS matches (
     created_at          TIMESTAMP       DEFAULT NOW(),
     updated_at          TIMESTAMP       DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXISTS bookings (
+    booking_id      SERIAL PRIMARY KEY,
+    user_id         INT             REFERENCES users(user_id) ON DELETE SET NULL,
+    match_id        INT             REFERENCES matches(match_id) ON DELETE SET NULL,
+    seat_number     VARCHAR(10),
+    payment_status  VARCHAR(20)     CHECK (payment_status IN ('Pending', 'Confirmed', 'Cancelled', 'Refunded')),
+    total_cost      NUMERIC(10,2)   NOT NULL,
+    created_at      TIMESTAMP       DEFAULT NOW(),
+    updated_at      TIMESTAMP       DEFAULT NOW()
+);
