@@ -32,3 +32,16 @@ CREATE TABLE IF NOT EXISTS bookings (
     created_at      TIMESTAMP       DEFAULT NOW(),
     updated_at      TIMESTAMP       DEFAULT NOW()
 );
+
+
+
+-- ! retrieve matches which status available
+SELECT
+    match_id,
+    fixture,
+    base_ticket_price
+FROM
+    matches
+WHERE
+    match_status = 'Available'
+    AND tournament_category = 'Champions League';
